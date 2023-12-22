@@ -132,12 +132,12 @@ class TextAudioCollateWithPath:
         """
         # Right zero-pad all one-hot text sequences to max input length
         _, ids_sorted_decreasing = torch.sort(
-            torch.LongTensor([x[1].size(1) for x in batch]), dim=0, descending=True
+            torch.LongTensor([x[1].size(-1) for x in batch]), dim=0, descending=True
         )
 
         max_text_len = max([len(x[0]) for x in batch])
-        max_spec_len = max([x[1].size(1) for x in batch])
-        max_wav_len = max([x[2].size(1) for x in batch])
+        max_spec_len = max([x[1].size(-1) for x in batch])
+        max_wav_len = max([x[2].size(-1) for x in batch])
 
         text_lengths = torch.LongTensor(len(batch))
         spec_lengths = torch.LongTensor(len(batch))
@@ -157,12 +157,12 @@ class TextAudioCollateWithPath:
             text_lengths[i] = text.size(0)
 
             spec = row[1]
-            spec_padded[i, :, : spec.size(1)] = spec
-            spec_lengths[i] = spec.size(1)
+            spec_padded[i, :, : spec.size(-1)] = spec
+            spec_lengths[i] = spec.size(-1)
 
             wav = row[2]
-            wav_padded[i, :, : wav.size(1)] = wav
-            wav_lengths[i] = wav.size(1)
+            wav_padded[i, :, : wav.size(-1)] = wav
+            wav_lengths[i] = wav.size(-1)
 
         paths = [x[3] for x in batch]
 
